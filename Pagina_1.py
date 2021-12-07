@@ -11,6 +11,7 @@ class Pagina_1:
         self.lista_entrys = []
         self.lista_codigos = []
         self.var = StringVar()
+        self.var_e = StringVar()
 
         lf_p = LabelFrame(master)
         lf_p.place(relwidth=1, relheight=1)
@@ -98,24 +99,33 @@ class Pagina_1:
             self.lista_codigos.append(cod)
 
     def bot_frames(self):
+        # Frame dos botões
+        f_bt = LabelFrame(self.lf_bot)
+        f_bt.pack(side='right', expand=1)
+
         # Botão de limpar os campos ACESSA A FUNÇÂO DELETE
-        bt_delete = Button(self.lf_bot, text='Limpar', command=delete,
-                           font=('Segoe UI Semibold', 12))
-        bt_delete.pack(side='left', expand=1)
+        bt_delete = Button(f_bt, text='Limpar', command=delete,
+                           font=('Segoe UI Semibold', 9))
+        bt_delete.pack(side='bottom', expand=1)
 
         # Botão de salvar as informações no arquivo ACESSA A FUNÇÂO SALVAR
-        bt_salvar = Button(self.lf_bot, text='Salvar', command=salvar, font=(
-            'Segoe UI Semibold', 12))
-        bt_salvar.pack(side='right', expand=1)
+        bt_salvar = Button(f_bt, text='Salvar', command=salvar, font=(
+            'Segoe UI Semibold', 10))
+        bt_salvar.pack(side='top', expand=1)
 
         # Combobox que guarda a informação dos meses
-        lb = LabelFrame(self.lf_bot, text='Mês de Fechamento')
-        lb.pack(side='bottom', expand=1)
+        lb = LabelFrame(self.lf_bot, text='      Fechamento - Empresa')
+        lb.pack(side='left', expand=1)
         combo = ttk.Combobox(lb, textvariable=self.var, font=(
             'Segoe UI Semibold', 12), justify='center', width=8)
-        combo.pack(fill='both', expand=1)
+        combo.pack(side='left', expand=1)
         combo['value'] = ('Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
                           'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro')
+
+        combo_e = ttk.Combobox(
+            lb, textvariable=self.var_e, font=('Segoe UI Semibold', 12), justify='center', width=8)
+        combo_e.pack(side='right', expand=1)
+        combo_e['values'] = ('Composê', 'Quebra-Cabeça')
 
 # Função que limpa os campos de digitação de códigos e quantidade de peças
 
@@ -134,10 +144,10 @@ def salvar():
         data_rom = entry.get()
         num_rom.append(data_rom)
 
-    if num_rom[0] != '' and pag_1.var.get() != '':
+    if num_rom[0] != '' and pag_1.var.get() != '' and pag_1.var_e.get() != '':
         # salva n° de romaneio e data
         for data in num_rom:
-            with open(f'Romaneio {num_rom[0]}.txt', 'a') as arq:
+            with open(f'Romaneio {num_rom[0]} - {pag_1.var_e.get()}.txt', 'a') as arq:
                 arq.write(f'{data}\n')
 
         # salva codigo das peças
@@ -145,7 +155,7 @@ def salvar():
             cod = codigos.get()
             if cod == '':
                 cod = 0
-            with open(f'Romaneio {num_rom[0]}.txt', 'a') as arq:
+            with open(f'Romaneio {num_rom[0]} - {pag_1.var_e.get()}.txt', 'a') as arq:
                 arq.write(f'{cod}\n')
 
         # salva quantidade de peças
@@ -153,11 +163,13 @@ def salvar():
             quantidade = qntd.get()
             if quantidade == '':
                 quantidade = 0
-            with open(f'Romaneio {num_rom[0]}.txt', 'a') as arq:
+            with open(f'Romaneio {num_rom[0]} - {pag_1.var_e.get()}.txt', 'a') as arq:
                 arq.write(f'{quantidade}\n')
         # salva mês do fechamento do lote
-        with open(f'Romaneio {num_rom[0]}.txt', 'a') as arq:
-            arq.write(f'{pag_1.var.get()}\n')
+        mes_empresa = [pag_1.var.get(), pag_1.var_e.get()]
+        for dados in mes_empresa:
+            with open(f'Romaneio {num_rom[0]} - {pag_1.var_e.get()}.txt', 'a') as arq:
+                arq.write(f'{dados}\n')
 
 
 if __name__ == '__main__':

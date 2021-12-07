@@ -5,6 +5,7 @@ from tkinter import *
 from tkinter import ttk
 from tkcalendar import DateEntry
 import Pagina_1
+from Pagina_2 import Pagina_2
 
 app = Tk()
 app.geometry('300x500')
@@ -31,4 +32,8 @@ pag_1.top_frames()
 pag_1.mid_frames()
 pag_1.bot_frames()
 
+pag_2 = Pagina_2(frame_fechamento)
+pag_2.top_frames()
+#pag_2.mid_frames()
+#pag_2.bot_frames()
 app.mainloop()
