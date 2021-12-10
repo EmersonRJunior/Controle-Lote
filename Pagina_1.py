@@ -89,12 +89,12 @@ class Pagina_1:
             lb.place(relwidth=1, relheight=1)
     # Loop para as quantidades de peças
         for i in range(10):
-            inputs = Entry(lb_e)
+            inputs = Entry(lb_e, justify= 'center')
             inputs.place(relwidth=1, relheight=1/10, relx=0, rely=i/10)
             self.lista_entrys.append(inputs)
     # Loop para os codigos das peças
         for i in range(10):
-            cod = Entry(lb_c)
+            cod = Entry(lb_c, justify= 'center')
             cod.place(relwidth=1, relheight=1/10, relx=0, rely=i/10)
             self.lista_codigos.append(cod)
 

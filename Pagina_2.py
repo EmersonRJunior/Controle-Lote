@@ -5,8 +5,12 @@ import glob
 
 class Pagina_2:
     def __init__(self, master):
+        self.master = master
         self.list_mes = StringVar()
         self.list_empresa = StringVar()
+        self.sv = StringVar()
+        self.list_sv = ['Romaneio 450', 'dois', 'tres', 'quatro',
+                        'cinco', 'seis', 'sets', 'oito', 'nove', 'dez']
 
         # Frames principais
         self.lf_top = LabelFrame(master, text='top')
@@ -52,10 +56,34 @@ class Pagina_2:
         combo_empresa.pack(fill='both', expand=1)
         combo_empresa['value'] = ('Composê', 'Quebra-Cabeça')
 
+    def mid_frames(self):
+        # Iniciando os frames de posição
+        lf_romaneio = LabelFrame(self.lf_mid, text='Romaneios')
+        lf_romaneio.place(relwidth=2.5/10, relheight=1)
+
+        lf_qntd = LabelFrame(self.lf_mid, text='Qntd')
+        lf_qntd.place(relwidth=2/10, relheight=1, relx=2.5/10)
+
+        lf_preço = LabelFrame(self.lf_mid, text='  R$')
+        lf_preço.place(relwidth=1.5/10, relheight=1, relx=4.5/10)
+
+        lf_entrada = LabelFrame(self.lf_mid, text='Entrada')
+        lf_entrada.place(relwidth=2/10, relheight=1, relx=6/10)
+
+        lf_saida = LabelFrame(self.lf_mid, text='saída')
+        lf_saida.place(relwidth=2/10, relheight=1, relx=8/10)
+
+        for i in range(10):
+            romaneio = LabelFrame(lf_romaneio)
+            romaneio.place(relwidth=1, relheight=1/10, rely=i/10)
+            lb_romaneio = Label(romaneio, text=f'{self.list_sv[i]}')
+            lb_romaneio.pack(fill='both', expand=1)
+
 
 if __name__ == '__main__':
     app = Tk()
     app.geometry('300x500')
     pag_2 = Pagina_2(app)
     pag_2.top_frames()
+    pag_2.mid_frames()
     app.mainloop()
