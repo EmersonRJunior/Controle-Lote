@@ -1,6 +1,10 @@
 from tkinter import *
 from tkinter import ttk
 from tkcalendar import DateEntry
+import pandas as pd
+import os
+
+from Pagina_2 import Pagina_2
 
 
 class Pagina_1:
@@ -89,43 +93,64 @@ class Pagina_1:
             lb.place(relwidth=1, relheight=1)
     # Loop para as quantidades de peças
         for i in range(10):
-            inputs = Entry(lb_e, justify= 'center')
+            inputs = Entry(lb_e, justify='center')
             inputs.place(relwidth=1, relheight=1/10, relx=0, rely=i/10)
             self.lista_entrys.append(inputs)
     # Loop para os codigos das peças
         for i in range(10):
-            cod = Entry(lb_c, justify= 'center')
+            cod = Entry(lb_c, justify='center')
             cod.place(relwidth=1, relheight=1/10, relx=0, rely=i/10)
             self.lista_codigos.append(cod)
 
     def bot_frames(self):
         # Frame dos botões
         f_bt = LabelFrame(self.lf_bot)
-        f_bt.pack(side='right', expand=1)
+        f_bt.place(relwidth=0.3, relheight=0.8, relx=0.7, rely=0.1)
 
         # Botão de limpar os campos ACESSA A FUNÇÂO DELETE
         bt_delete = Button(f_bt, text='Limpar', command=delete,
                            font=('Segoe UI Semibold', 9))
-        bt_delete.pack(side='bottom', expand=1)
+        bt_delete.place(relwidth=0.5, relheight=0.5, relx=0.5)
 
         # Botão de salvar as informações no arquivo ACESSA A FUNÇÂO SALVAR
         bt_salvar = Button(f_bt, text='Salvar', command=salvar, font=(
             'Segoe UI Semibold', 10))
-        bt_salvar.pack(side='top', expand=1)
+        bt_salvar.place(relwidth=0.5, relheight=0.5)
+
+        # Botao que abre a janela pra gerar o fechamento (Pagina 2)
+        bt_gerar_fechamento = Button(
+            f_bt, text='Gerar Fechamento', command=change_window)
+        bt_gerar_fechamento.place(relwidth=1, relheight=0.5, rely=0.5)
+
+        lb = LabelFrame(
+            self.lf_bot, text=' Fechamento                    Empresa')
+        lb.place(relwidth=0.7, relheight=0.8, rely=0.1)
 
         # Combobox que guarda a informação dos meses
-        lb = LabelFrame(self.lf_bot, text='      Fechamento - Empresa')
-        lb.pack(side='left', expand=1)
         combo = ttk.Combobox(lb, textvariable=self.var, font=(
             'Segoe UI Semibold', 12), justify='center', width=8)
         combo.pack(side='left', expand=1)
+
         combo['value'] = ('Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
                           'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro')
 
-        combo_e = ttk.Combobox(
-            lb, textvariable=self.var_e, font=('Segoe UI Semibold', 12), justify='center', width=8)
+        # Combobox que guarda a informação das empresas
+        combo_e = ttk.Combobox(lb, textvariable=self.var_e, font=(
+            'Segoe UI Semibold', 12), justify='center', width=8)
         combo_e.pack(side='right', expand=1)
+
         combo_e['values'] = ('Composê', 'Quebra-Cabeça')
+
+
+# Função que troca de janela pra janela fechamento (Pagina 2)
+def change_window():
+    top = Toplevel()
+    pag_2 = Pagina_2(top)
+    top.geometry('700x600')
+    pag_2.top_frames()
+    pag_2.mid_frames()
+    pag_2.bot_frames()
+    top.mainloop()
 
 # Função que limpa os campos de digitação de códigos e quantidade de peças
 
@@ -135,7 +160,7 @@ def delete():
         pag_1.lista_entrys[i].delete(0, END)
         pag_1.lista_codigos[i].delete(0, END)
 
-# Salvando em um arquivo txt é temporário, na finalização do projeto isto vai para um bancode dados SQL
+# Salvando em um arquivo txt é temporário, na finalização do projeto isto vai para um banco de dados SQL
 
 
 def salvar():
@@ -145,10 +170,18 @@ def salvar():
         num_rom.append(data_rom)
 
     if num_rom[0] != '' and pag_1.var.get() != '' and pag_1.var_e.get() != '':
+        # recebe o nome da empresa
+        mes_empresa = [pag_1.var.get(), pag_1.var_e.get()]
+        mes = mes_empresa[0]
+        empresa = mes_empresa[1]
+        entrada = num_rom[1]
+        saida = num_rom[2]
         # salva n° de romaneio e data
-        for data in num_rom:
-            with open(f'Romaneio {num_rom[0]} - {pag_1.var_e.get()}.txt', 'a') as arq:
-                arq.write(f'{data}\n')
+        path_rom = (f'Fechamentos/{empresa}/{mes}')
+        if os.path.isdir(path_rom):
+            pass
+        else:
+            os.makedirs(path_rom)
 
         # salva codigo das peças
         for codigos in pag_1.lista_codigos:
@@ -166,16 +199,18 @@ def salvar():
             with open(f'Romaneio {num_rom[0]} - {pag_1.var_e.get()}.txt', 'a') as arq:
                 arq.write(f'{quantidade}\n')
         # salva mês do fechamento do lote
-        mes_empresa = [pag_1.var.get(), pag_1.var_e.get()]
-        for dados in mes_empresa:
-            with open(f'Romaneio {num_rom[0]} - {pag_1.var_e.get()}.txt', 'a') as arq:
-                arq.write(f'{dados}\n')
+
+        path_mes = (f'Fechamentos\{mes_empresa[1]}')
+        if os.path.isdir(path_mes):
+            pass
+        else:
+            os.makedirs(path_mes)
 
 
 if __name__ == '__main__':
     app = Tk()
 
-    app.geometry('300x500')
+    app.geometry('370x550')
     pag_1 = Pagina_1(app)
     pag_1.top_frames()
     pag_1.mid_frames()
