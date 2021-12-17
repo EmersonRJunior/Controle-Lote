@@ -1,4 +1,4 @@
-# pyinstaller -F --hidden-import "babel.numbers"
+# pyinstaller -F --hidden-import "babel.numbers" --noconsole .\Main.py
 # LEMBRAR DE USAR POR bug DO PYINSTALLER
 
 from tkinter import *

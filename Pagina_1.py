@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkcalendar import DateEntry
-#import pandas as pd
+
 import os
 
 from Pagina_2 import Pagina_2
