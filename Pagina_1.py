@@ -1,16 +1,14 @@
 from tkinter import *
 from tkinter import ttk
 from tkcalendar import DateEntry
-
 import os
-
 from Pagina_2 import Pagina_2
 
 
 class Pagina_1:
     def __init__(self, master):
         self.master = master
-    # Listas principais
+        # Listas principais
         self.lista_rom_data = []
         self.lista_entrys = []
         self.lista_codigos = []
@@ -19,7 +17,7 @@ class Pagina_1:
 
         lf_p = LabelFrame(master)
         lf_p.place(relwidth=1, relheight=1)
-    # Frames principais
+        # Frames principais
         self.lf_top = LabelFrame(lf_p)
         self.lf_top.place(relwidth=1, relheight=0.7/4,)
         self.lf_mid = LabelFrame(lf_p)
@@ -30,51 +28,77 @@ class Pagina_1:
     # Funções dos botões
     def delete(self):
         for i in range(10):
+            self.lista_rom_data[0].delete(0, END)
             self.lista_entrys[i].delete(0, END)
             self.lista_codigos[i].delete(0, END)
 
     def salvar(self):
-        num_rom = []
-        for entry in self.lista_rom_data:
-            data_rom = entry.get()
-            num_rom.append(data_rom)
+        # inicio
+        numero_romaneio = []
+        for num_entr_saida in self.lista_rom_data:  # coleta numero do romaneio, data de entrada e data de saida
+            data_rom = num_entr_saida.get()
+            numero_romaneio.append(data_rom)
 
-        if num_rom[0] != '' and self.var.get() != '' and self.var_e.get() != '':
-            # recebe o nome da empresa
-            mes_empresa = [self.var.get(), self.var_e.get()]
-            mes = mes_empresa[0]
-            empresa = mes_empresa[1]
-            entrada = num_rom[1]
-            saida = num_rom[2]
-            # salva n° de romaneio e data
+        # recebe informações
+        mes_empresa = [self.var.get(), self.var_e.get()]
+        mes = mes_empresa[0]
+        empresa = mes_empresa[1]
+        romaneio = numero_romaneio[0]
+        entrada = numero_romaneio[1]
+        saida = numero_romaneio[2]
+        qntd_list = []
+        cod_list = []
+        lista_cod_excel = []
+        lista_preço_excel = []
+        verificar = []
+
+        # puxa as informações do excel
+        import pandas as pd
+        excel = pd.read_excel('Preço_peças.xlsx')
+        cod_excel = excel['codigo']
+        preço_excel = excel['preço']
+        lista_cod_excel.append(cod_excel)
+        lista_preço_excel.append(lista_preço_excel)
+
+        # puxa codigo das peças
+        for codigos in self.lista_codigos:
+            cod = codigos.get()
+            if cod == '':
+                cod = '0'
+            cod_list.append(cod)
+
+        # puxa quantidade de peças
+        for qntd in self.lista_entrys:
+            quantidade = qntd.get()
+            if quantidade == '':
+                quantidade = '0'
+            qntd_list.append(quantidade)
+
+        for i in range(10):
+            if cod_list[i] != '0' and qntd_list[i] != '0':
+                verificar.append(True)
+            elif cod_list[i] == '0' and qntd_list[i] == '0':
+                verificar.append(True)
+            elif cod_list[i] == '0' and qntd_list[i] != '0':
+                verificar.append(False)
+            elif cod_list[i] != '0' and qntd_list[i] == '0':
+                verificar.append(False)
+
+        # Reúne todas as informações e salva em um excel apenas se nao houver informações importantes em branco
+        if romaneio != '' and self.var.get() != '' and self.var_e.get() != '' and not False in verificar:
+            # verifica se existe a pasta da empresa e mês de fechamento, senão, cria ambas
             path_rom = (f'Fechamentos/{empresa}/{mes}')
-            if os.path.isdir(path_rom):
-                pass
-            else:
+            if not os.path.isdir(path_rom):
                 os.makedirs(path_rom)
 
-            # salva codigo das peças
-            for codigos in self.lista_codigos:
-                cod = codigos.get()
-                if cod == '':
-                    cod = 0
-                with open(f'Romaneio {num_rom[0]} - {self.var_e.get()}.txt', 'a') as arq:
-                    arq.write(f'{cod}\n')
-
-            # salva quantidade de peças
-            for qntd in self.lista_entrys:
-                quantidade = qntd.get()
-                if quantidade == '':
-                    quantidade = 0
-                with open(f'Romaneio {num_rom[0]} - {self.var_e.get()}.txt', 'a') as arq:
-                    arq.write(f'{quantidade}\n')
-            # salva mês do fechamento do lote
-
-            path_mes = (f'Fechamentos\{mes_empresa[1]}')
-            if os.path.isdir(path_mes):
-                pass
-            else:
-                os.makedirs(path_mes)
+            dados = {
+                'Itens': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+                'Códigos': cod_list,
+                'Quantidade': qntd_list
+            }
+            df = pd.DataFrame.from_dict(dados)
+            df.to_excel(
+                f'{path_rom}/Romaneio {romaneio}.xlsx', 'fechamento', index=False)
 
     def change_window(self):
         top = Toplevel()
@@ -198,15 +222,6 @@ class Pagina_1:
         combo_e.pack(side='right', expand=1)
 
         combo_e['values'] = ('Composê', 'Quebra-Cabeça')
-
-
-# Função que troca de janela pra janela fechamento (Pagina 2)
-
-
-# Função que limpa os campos de digitação de códigos e quantidade de peças
-
-
-# Salvando em um arquivo txt é temporário, na finalização do projeto isto vai para um banco de dados SQL
 
 
 if __name__ == '__main__':

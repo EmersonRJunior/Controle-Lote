@@ -1,11 +1,9 @@
-# pyinstaller -F --hidden-import "babel.numbers" --noconsole .\Main.py
-# LEMBRAR DE USAR POR bug DO PYINSTALLER
+#python .\setup.py build
 
 from tkinter import *
 from tkinter import ttk
 from tkcalendar import DateEntry
 import Pagina_1
-
 
 app = Tk()
 app.geometry('370x550')
