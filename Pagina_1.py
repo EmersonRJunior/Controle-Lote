@@ -51,10 +51,11 @@ class Pagina_1:
         lista_cod_excel = []
         lista_preço_excel = []
         verificar = []
+        codigo_existe = True
 
         # puxa as informações do excel
         import pandas as pd
-        excel = pd.read_excel('Preço_peças.xlsx')
+        excel = pd.read_excel('Preço_peças.xlsx', dtype=str)
         cod_excel = excel['codigo']
         preço_excel = excel['preço']
         lista_cod_excel.append(cod_excel)
@@ -84,21 +85,31 @@ class Pagina_1:
             elif cod_list[i] != '0' and qntd_list[i] == '0':
                 verificar.append(False)
 
+        for i in range(10):
+            print(cod_excel)
+            if not cod_list[i] in cod_excel and False in verificar:
+                codigo_existe = False
+                
         # Reúne todas as informações e salva em um excel apenas se nao houver informações importantes em branco
-        if romaneio != '' and self.var.get() != '' and self.var_e.get() != '' and not False in verificar:
+        if romaneio != '' and self.var.get() != '' and self.var_e.get() != '':
             # verifica se existe a pasta da empresa e mês de fechamento, senão, cria ambas
-            path_rom = (f'Fechamentos/{empresa}/{mes}')
-            if not os.path.isdir(path_rom):
-                os.makedirs(path_rom)
+            if not False in verificar and codigo_existe == True:
+                path_rom = (f'Fechamentos/{empresa}/{mes}')
+                if not os.path.isdir(path_rom):
+                    os.makedirs(path_rom)
 
-            dados = {
-                'Itens': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-                'Códigos': cod_list,
-                'Quantidade': qntd_list
-            }
-            df = pd.DataFrame.from_dict(dados)
-            df.to_excel(
-                f'{path_rom}/Romaneio {romaneio}.xlsx', 'fechamento', index=False)
+                dados = {
+                    'Itens': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+                    'Códigos': cod_list,
+                    'Quantidade': qntd_list
+                }
+                df = pd.DataFrame.from_dict(dados)
+                df.to_excel(
+                    f'{path_rom}/Romaneio {romaneio}.xlsx', 'fechamento', index=False)
+            else:
+                print('Verifique se os codigos estão \npreenchidos ou se estão corretos')
+        else:
+            print('Verifique se preencheu as colunas de romaneio\nempresa e mes de fechamento')
 
     def change_window(self):
         top = Toplevel()
