@@ -33,7 +33,7 @@ class Pagina_1:
             self.lista_codigos[i].delete(0, END)
 
     def salvar(self):
-        # inicio
+        # inicio funçao salvar
         numero_romaneio = []
         for num_entr_saida in self.lista_rom_data:  # coleta numero do romaneio, data de entrada e data de saida
             data_rom = num_entr_saida.get()
@@ -75,6 +75,7 @@ class Pagina_1:
                 quantidade = '0'
             qntd_list.append(quantidade)
 
+        # verifica se o valor dos codigos no app não é zero
         for i in range(10):
             if cod_list[i] != '0' and qntd_list[i] != '0':
                 verificar.append(True)
@@ -85,11 +86,11 @@ class Pagina_1:
             elif cod_list[i] != '0' and qntd_list[i] == '0':
                 verificar.append(False)
 
+        # deveria verificar se o codigo digitado existe na planilha
         for i in range(10):
-            print(cod_excel)
             if not cod_list[i] in cod_excel and False in verificar:
                 codigo_existe = False
-                
+
         # Reúne todas as informações e salva em um excel apenas se nao houver informações importantes em branco
         if romaneio != '' and self.var.get() != '' and self.var_e.get() != '':
             # verifica se existe a pasta da empresa e mês de fechamento, senão, cria ambas
@@ -109,7 +110,8 @@ class Pagina_1:
             else:
                 print('Verifique se os codigos estão \npreenchidos ou se estão corretos')
         else:
-            print('Verifique se preencheu as colunas de romaneio\nempresa e mes de fechamento')
+            print(
+                'Verifique se preencheu as colunas n° romaneio,\nempresa e mes de fechamento')
 
     def change_window(self):
         top = Toplevel()
@@ -120,6 +122,7 @@ class Pagina_1:
         pag_2.bot_frames()
         top.mainloop()
 
+    # Corpo do aplicativo
     def top_frames(self):
         # Frames de posição dos textos "Romaneio", "Entrada", "Saída"
         lf_rom = LabelFrame(self.lf_top)
