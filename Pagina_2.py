@@ -28,6 +28,7 @@ class Pagina_2:
             file.write(st)
 
     def gerar(self):
+        self.list_romaneio.clear()
         mes = self.list_mes.get()
         empresa = self.list_empresa.get()
         for x in glob.glob(f'Fechamentos/{empresa}/{mes}/*'):
@@ -35,16 +36,16 @@ class Pagina_2:
             self.list_romaneio.append(os.path.splitext(romaneio)[0])
 
         if len(self.list_romaneio) <= 10:
-            test = 10
+            qntd_labels = 10
         elif len(self.list_romaneio) > 10:
-            test = len(self.list_romaneio)
+            qntd_labels = len(self.list_romaneio)
 
         for i in range(len(self.list_romaneio)):
             romaneio = LabelFrame(self.lf_romaneio)
-            romaneio.place(relwidth=1, relheight=1/test, rely=i/test)
-            lb_romaneio = Label(romaneio, textvariable=self.list_romaneio_var)
+            romaneio.place(relwidth=1, relheight=1 /
+                           qntd_labels, rely=i/qntd_labels)
+            lb_romaneio = Label(romaneio, text=self.list_romaneio[i])
             lb_romaneio.pack(fill='both', expand=1)
-        self.list_romaneio_var.set(self.list_romaneio[i])
 
     def top_frames(self):
         # Frames e Labels esquerdos / de texto
