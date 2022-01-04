@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import scrolledtext
 import glob
+import os
 
 
 class Pagina_2:
@@ -9,9 +10,9 @@ class Pagina_2:
         self.master = master
         self.list_mes = StringVar()
         self.list_empresa = StringVar()
-        self.list_romaneio = ['Romaneio 450', 'dois', 'tres', 'quatro',
-                              'cinco', 'seis', 'sets', 'oito', 'nove', 'Romaneio 460']
         self.scrolledtext = []
+        self.list_romaneio = []
+        self.list_romaneio_var = StringVar()
 
         # Frames principais
         self.lf_top = LabelFrame(master)
@@ -27,7 +28,23 @@ class Pagina_2:
             file.write(st)
 
     def gerar(self):
-        pass
+        mes = self.list_mes.get()
+        empresa = self.list_empresa.get()
+        for x in glob.glob(f'Fechamentos/{empresa}/{mes}/*'):
+            romaneio = (os.path.basename(x))
+            self.list_romaneio.append(os.path.splitext(romaneio)[0])
+
+        if len(self.list_romaneio) <= 10:
+            test = 10
+        elif len(self.list_romaneio) > 10:
+            test = len(self.list_romaneio)
+
+        for i in range(len(self.list_romaneio)):
+            romaneio = LabelFrame(self.lf_romaneio)
+            romaneio.place(relwidth=1, relheight=1/test, rely=i/test)
+            lb_romaneio = Label(romaneio, textvariable=self.list_romaneio_var)
+            lb_romaneio.pack(fill='both', expand=1)
+        self.list_romaneio_var.set(self.list_romaneio[i])
 
     def top_frames(self):
         # Frames e Labels esquerdos / de texto
@@ -59,14 +76,14 @@ class Pagina_2:
                              4, relx=0.825, rely=0.1)
 
         combo_mes = ttk.Combobox(lf_combo_mes, textvariable=self.list_mes, font=(
-            'Segoe UI Semibold', 12), justify='center')
+            'Segoe UI Semibold', 18), justify='center')
         combo_mes.pack(fill='both', expand=1)
         combo_mes['value'] = ('Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
                               'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro')
 
         combo_empresa = ttk.Combobox(
             lf_combo_empresa, textvariable=self.list_empresa, font=(
-                'Segoe UI Semibold', 12), justify='center')
+                'Segoe UI Semibold', 18), justify='center')
         combo_empresa.pack(fill='both', expand=1)
         combo_empresa['value'] = ('Composê', 'Quebra-Cabeça')
 
@@ -75,8 +92,8 @@ class Pagina_2:
 
     def mid_frames(self):
         # Iniciando os frames de posição
-        lf_romaneio = LabelFrame(self.lf_mid, text='Romaneios')
-        lf_romaneio.place(relwidth=3/10, relheight=1)
+        self.lf_romaneio = LabelFrame(self.lf_mid, text='Romaneios')
+        self.lf_romaneio.place(relwidth=3/10, relheight=1)
 
         lf_qntd = LabelFrame(self.lf_mid, text='Qntd')
         lf_qntd.place(relwidth=2/10, relheight=1, relx=3/10)
@@ -89,12 +106,7 @@ class Pagina_2:
 
         lf_saida = LabelFrame(self.lf_mid, text='saída')
         lf_saida.place(relwidth=1.5/10, relheight=1, relx=8.5/10)
-
-        for i in range(len(self.list_romaneio)):
-            romaneio = LabelFrame(lf_romaneio)
-            romaneio.place(relwidth=1, relheight=1/10, rely=i/10)
-            lb_romaneio = Label(romaneio, text=f'{self.list_romaneio[i]}')
-            lb_romaneio.pack(fill='both', expand=1)
+        # Widgets
 
     def bot_frames(self):
         lb = LabelFrame(self.lf_bot, text='Obs:')
@@ -109,7 +121,7 @@ class Pagina_2:
 
 if __name__ == '__main__':
     app = Tk()
-    app.geometry('700x600')
+    app.geometry('670x750')
     pag_2 = Pagina_2(app)
     pag_2.top_frames()
     pag_2.mid_frames()
