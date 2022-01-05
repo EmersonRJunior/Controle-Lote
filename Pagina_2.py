@@ -10,9 +10,10 @@ class Pagina_2:
         self.master = master
         self.list_mes = StringVar()
         self.list_empresa = StringVar()
+        self.list_romaneio_var = StringVar()
         self.scrolledtext = []
         self.list_romaneio = []
-        self.list_romaneio_var = StringVar()
+        self.lista_labels = []
 
         # Frames principais
         self.lf_top = LabelFrame(master)
@@ -28,24 +29,36 @@ class Pagina_2:
             file.write(st)
 
     def gerar(self):
+        #destroi os labels anteriores que ficaram da outra execução da função
+        for x in self.lista_labels:
+            x.destroy()
+
+        #limpa a lista de romaneios para criar apenas os labels desejados
         self.list_romaneio.clear()
+
+        #recupera informações sobre mes e empresa para apresentar os dados
         mes = self.list_mes.get()
         empresa = self.list_empresa.get()
+
+        #encontra o nome e caminho de cada romaneio com base nas variaveis acima
         for x in glob.glob(f'Fechamentos/{empresa}/{mes}/*'):
             romaneio = (os.path.basename(x))
             self.list_romaneio.append(os.path.splitext(romaneio)[0])
 
+        #define a quantidade de labels que serão criados
         if len(self.list_romaneio) <= 10:
             qntd_labels = 10
         elif len(self.list_romaneio) > 10:
             qntd_labels = len(self.list_romaneio)
 
+        #cria os labels de fato
         for i in range(len(self.list_romaneio)):
             romaneio = LabelFrame(self.lf_romaneio)
             romaneio.place(relwidth=1, relheight=1 /
                            qntd_labels, rely=i/qntd_labels)
             lb_romaneio = Label(romaneio, text=self.list_romaneio[i])
             lb_romaneio.pack(fill='both', expand=1)
+            self.lista_labels.append(romaneio)
 
     def top_frames(self):
         # Frames e Labels esquerdos / de texto
@@ -96,18 +109,19 @@ class Pagina_2:
         self.lf_romaneio = LabelFrame(self.lf_mid, text='Romaneios')
         self.lf_romaneio.place(relwidth=3/10, relheight=1)
 
-        lf_qntd = LabelFrame(self.lf_mid, text='Qntd')
-        lf_qntd.place(relwidth=2/10, relheight=1, relx=3/10)
+        self.lf_qntd = LabelFrame(self.lf_mid, text='Qntd')
+        self.lf_qntd.place(relwidth=2/10, relheight=1, relx=3/10)
 
-        lf_preço = LabelFrame(self.lf_mid, text='  R$')
-        lf_preço.place(relwidth=1.5/10, relheight=1, relx=5/10)
+        self.lf_preço = LabelFrame(self.lf_mid, text='  R$')
+        self.lf_preço.place(relwidth=1.5/10, relheight=1, relx=5/10)
 
-        lf_entrada = LabelFrame(self.lf_mid, text='Entrada')
-        lf_entrada.place(relwidth=2/10, relheight=1, relx=6.5/10)
+        self.lf_entrada = LabelFrame(self.lf_mid, text='Entrada')
+        self.lf_entrada.place(relwidth=2/10, relheight=1, relx=6.5/10)
 
-        lf_saida = LabelFrame(self.lf_mid, text='saída')
-        lf_saida.place(relwidth=1.5/10, relheight=1, relx=8.5/10)
-        # Widgets
+        self.lf_saida = LabelFrame(self.lf_mid, text='saída')
+        self.lf_saida.place(relwidth=1.5/10, relheight=1, relx=8.5/10)
+
+        #Os widgets estão na função 'gerar'
 
     def bot_frames(self):
         lb = LabelFrame(self.lf_bot, text='Obs:')

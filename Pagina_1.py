@@ -59,7 +59,7 @@ class Pagina_1:
         cod_excel = excel['codigo']
         preço_excel = excel['preço']
         lista_cod_excel.append(cod_excel)
-        lista_preço_excel.append(lista_preço_excel)
+        lista_preço_excel.append(preço_excel)
 
         # puxa codigo das peças
         for codigos in self.lista_codigos:
@@ -100,13 +100,17 @@ class Pagina_1:
                     os.makedirs(path_rom)
 
                 dados = {
-                    'Itens': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-                    'Códigos': cod_list,
-                    'Quantidade': qntd_list
+                    'Item': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+                    'Código': cod_list,
+                    'Quantidade': qntd_list,
+                    'Entrada': entrada,
+                    'Saída': saida
                 }
                 df = pd.DataFrame.from_dict(dados)
                 df.to_excel(
                     f'{path_rom}/Romaneio {romaneio}.xlsx', 'fechamento', index=False)
+                print(df.loc['130', 'Quantidade'])
+
             else:
                 print('Verifique se os codigos estão \npreenchidos ou se estão corretos')
         else:
